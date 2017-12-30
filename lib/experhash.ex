@@ -1,23 +1,28 @@
 defmodule ExPerHash do
   use GenServer
 
+  @default_port_path "priv/experhash_port"
   @type error :: {:error, {atom, atom}}
 
   @doc """
   Start an ExPerHash server process linked to the current process.
   """
-  @spec start_link() :: GenServer.on_start
-  def start_link() do
-    GenServer.start_link __MODULE__, []
+  @spec start_link([port_path: String.t]) :: GenServer.on_start
+  def start_link(), do: start_link([])
+  def start_link(args) when is_list(args) do
+    GenServer.start_link __MODULE__, args
   end
 
   @doc """
   Start an ExPerHash server process linked to the current process, registered
-  as `name`.
+  as `name` with args `args`.
+
+  You can supply the `:port_path` arg to specify a new path to the ExPerHash binary.
   """
-  @spec start_link(GenServer.name) :: GenServer.on_start
-  def start_link(name) do
-    GenServer.start_link __MODULE__, [], name: name
+  @spec start_link(GenServer.name, [port_path: String.t]) :: GenServer.on_start
+  def start_link(name), do: start_link(name, [])
+  def start_link(name, args) do
+    GenServer.start_link __MODULE__, args, name: name
   end
 
   @doc """
@@ -57,11 +62,13 @@ defmodule ExPerHash do
     defstruct port: nil
   end
 
-  def init(_args) do
-    port = Port.open {:spawn, "priv/experhash_port"}, [{:packet, 4}, :binary]
+  def init([port_path: port_path]) do
+    port = Port.open {:spawn, port_path}, [{:packet, 4}, :binary]
 
     {:ok, %State{port: port}}
   end
+
+  def init(_args), do: init([port_path: @default_port_path])
 
   def handle_call({:command, command}, _from, state) do
     send_command state.port, command
