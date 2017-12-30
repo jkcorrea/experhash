@@ -1,13 +1,13 @@
-erlang_base = $(shell erl -eval 'io:format("~s", [code:root_dir()])' -s init stop -noshell)/usr
+ERLANG_BASE = $(shell erl -eval 'io:format("~s", [code:root_dir()])' -s init stop -noshell)/usr
 
-CXXFLAGS += -std=c++11 -g $(shell pkg-config --cflags Magick++) -I$(erlang_base)/include -L$(erlang_base)/lib
+CXXFLAGS += -std=c++11 -g $(shell pkg-config --cflags Magick++) -I$(ERLANG_BASE)/include -L$(ERLANG_BASE)/lib
 LDFLAGS += -lei $(shell pkg-config --libs Magick++)
 
-sources = $(wildcard cpp/src/*.cpp)
-objects = $(sources:.cpp=.o)
-header_deps = $(sources:.cpp=.d)
+SOURCES = $(wildcard cpp/src/*.cpp)
+OBJECTS = $(SOURCES:.cpp=.o)
+HEADER_DEPS = $(SOURCES:.cpp=.d)
 
-priv/experhash_port: $(objects) | priv
+priv/experhash_port: $(OBJECTS) | priv
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 priv:
@@ -18,9 +18,9 @@ cpp/src/%.d: cpp/src/%.cpp
 	rm -f $@; \
 	$(CXX) -MM -MT '$(@:.d=.o) $@' -MF $@ $(CPPFLAGS) $(CXXFLAGS) $<
 
-include $(header_deps)
+include $(HEADER_DEPS)
 
 .PHONY: clean
 clean:
-	rm -f priv/exphash_port $(objects) $(header_deps)
+	rm -rf priv/ $(OBJECTS) $(HEADER_DEPS)
 
