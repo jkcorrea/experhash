@@ -1,7 +1,7 @@
 ExPerHash
 =========
 
-Perceptual hashing for images. Implemented as a C++ program connected to 
+Perceptual hashing for images. Implemented as a C++ program connected to
 Elixir via a port.
 
 
@@ -30,7 +30,7 @@ Run `mix compile` to build both the Elixir and the C++ code.
 ##Usage
 
 ```elixir
-iex> {:ok, srv} = ExPerHash.start_link
+iex> {:ok, srv} = ExPerHash.start_link [port_path: "/opt/experhash_port"] # defaults to "priv/experhash_port"
 {:ok, #PID<0.91.0>}
 
 iex> {:ok, hash1} = ExPerHash.dd_hash srv, "some/image.png"
