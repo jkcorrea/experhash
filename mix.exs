@@ -9,8 +9,8 @@ defmodule ExPerHash.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      compilers: [:make, :elixir, :app],
-     aliases: aliases,
-     deps: deps]
+     aliases: aliases(),
+     deps: deps()]
   end
 
   def application do
@@ -29,15 +29,15 @@ end
 defmodule Mix.Tasks.Compile.Make do
   @shortdoc "Compile C++ code"
   use Mix.Task
-   
+
   def run(_) do
     {result, _error_code} = System.cmd("make", [], stderr_to_stdout: true)
     Mix.shell.info result
-     
+
     :ok
   end
 end
-  
+
 defmodule Mix.Tasks.Clean.Make do
   @shortdoc "Delete generated C++ files"
   use Mix.Task
@@ -45,7 +45,7 @@ defmodule Mix.Tasks.Clean.Make do
   def run(_) do
     {result, _error_code} = System.cmd("make", ['clean'], stderr_to_stdout: true)
     Mix.shell.info result
-    
+
     :ok
   end
 end
