@@ -6,24 +6,22 @@ defmodule ExPerHash do
 
   @doc """
   Start an ExPerHash server process linked to the current process.
+
+  Registers the process under `name` if given. You can also supply
+  the `[port_path: "/path/to/binary"]` argument to specify a custom
+  path to the ExPerHash compiled executable (defaults to `priv/experhash_port`).
   """
-  @spec start_link([port_path: String.t]) :: GenServer.on_start
+  @spec start_link() :: GenServer.on_start
   def start_link(), do: start_link([])
-  def start_link(args) when is_list(args) do
-    GenServer.start_link __MODULE__, args
-  end
 
-  @doc """
-  Start an ExPerHash server process linked to the current process, registered
-  as `name` with args `args`.
+  @spec start_link([port_path: String.t]) :: GenServer.on_start
+  def start_link(args) when is_list(args), do: GenServer.start_link __MODULE__, args
 
-  You can supply the `:port_path` arg to specify a new path to the ExPerHash binary.
-  """
-  @spec start_link(GenServer.name, [port_path: String.t]) :: GenServer.on_start
+  @spec start_link(GenServer.name) :: GenServer.on_start
   def start_link(name), do: start_link(name, [])
-  def start_link(name, args) do
-    GenServer.start_link __MODULE__, args, name: name
-  end
+
+  @spec start_link(GenServer.name, [port_path: String.t]) :: GenServer.on_start
+  def start_link(name, args), do: GenServer.start_link __MODULE__, args, name: name
 
   @doc """
   Calculate the aHash for the image named `filename`.

@@ -14,7 +14,7 @@ For use in a mix project, add ExPerHash to the `mix.exs` dependencies:
 
 ```elixir
 def deps do
-  [{:experhash, github: "kemonomachi/experhash"}]
+  [{:experhash, github: "jkcorrea/experhash"}]
 end
 ```
 
